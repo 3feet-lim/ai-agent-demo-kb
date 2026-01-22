@@ -1,0 +1,450 @@
+/**
+ * App 컴포넌트 스타일
+ *
+ * 메인 애플리케이션 레이아웃 및 스타일을 정의합니다.
+ * - 사이드바(SessionManager)와 메인 영역(ChatInterface) 레이아웃
+ * - 오류 알림 배너
+ * - 환영 화면
+ * - 반응형 디자인
+ *
+ * 요구사항: 2.2, 3.1, 3.2, 3.3
+ */
+
+/* =============================================================================
+   CSS 변수 정의
+   ============================================================================= */
+
+:root {
+  --app-bg: #f5f5f5;
+  --app-text: #333333;
+  --app-text-secondary: #666666;
+  --app-border: #e0e0e0;
+  --app-primary: #007bff;
+  --app-primary-hover: #0056b3;
+  --app-error-bg: #f8d7da;
+  --app-error-text: #721c24;
+  --app-error-border: #f5c6cb;
+  --app-shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* =============================================================================
+   전역 스타일 리셋
+   ============================================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--app-bg);
+  color: var(--app-text);
+}
+
+/* =============================================================================
+   메인 앱 컨테이너
+   ============================================================================= */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* =============================================================================
+   오류 알림 배너
+   ============================================================================= */
+
+.app__error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: var(--app-error-bg);
+  border-bottom: 1px solid var(--app-error-border);
+  color: var(--app-error-text);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.app__error-message {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.app__error-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background-color: transparent;
+  color: var(--app-error-text);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.app__error-close:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* =============================================================================
+   메인 레이아웃
+   ============================================================================= */
+
+.app__layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* =============================================================================
+   메인 영역
+   ============================================================================= */
+
+.app__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--app-bg);
+}
+
+/* =============================================================================
+   환영 화면
+   ============================================================================= */
+
+.app__welcome {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 32px;
+  background-color: #ffffff;
+}
+
+.app__welcome-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 480px;
+}
+
+.app__welcome-icon {
+  font-size: 64px;
+  margin-bottom: 24px;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+.app__welcome-title {
+  margin: 0 0 16px 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--app-text);
+}
+
+.app__welcome-description {
+  margin: 0 0 32px 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--app-text-secondary);
+}
+
+.app__welcome-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 32px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--app-primary);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.app__welcome-button:hover:not(:disabled) {
+  background-color: var(--app-primary-hover);
+  transform: translateY(-2px);
+}
+
+.app__welcome-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.app__welcome-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* =============================================================================
+   반응형 스타일
+   ============================================================================= */
+
+/* 태블릿 (768px 이하) */
+@media (max-width: 768px) {
+  .app__layout {
+    flex-direction: column;
+  }
+
+  /* 세션 매니저를 상단에 축소 표시 */
+  .session-manager {
+    width: 100%;
+    min-width: 100%;
+    height: auto;
+    max-height: 200px;
+    border-right: none;
+    border-bottom: 1px solid var(--app-border);
+  }
+
+  .session-manager__list {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .session-item {
+    flex-shrink: 0;
+    width: auto;
+    min-width: 150px;
+    max-width: 200px;
+    margin-bottom: 0;
+  }
+
+  .app__welcome-icon {
+    font-size: 48px;
+  }
+
+  .app__welcome-title {
+    font-size: 24px;
+  }
+
+  .app__welcome-description {
+    font-size: 14px;
+  }
+
+  .app__welcome-button {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+}
+
+/* 모바일 (480px 이하) */
+@media (max-width: 480px) {
+  .app__error {
+    padding: 10px 12px;
+  }
+
+  .app__error-message {
+    font-size: 13px;
+  }
+
+  .app__welcome {
+    padding: 24px 16px;
+  }
+
+  .app__welcome-icon {
+    font-size: 40px;
+    margin-bottom: 16px;
+  }
+
+  .app__welcome-title {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .app__welcome-description {
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+
+  .app__welcome-button {
+    width: 100%;
+    padding: 12px 20px;
+  }
+
+  /* 세션 매니저 모바일 최적화 */
+  .session-manager {
+    max-height: 150px;
+  }
+
+  .session-manager__header {
+    padding: 12px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .session-manager__title {
+    font-size: 1rem;
+  }
+
+  .session-manager__new-button {
+    width: auto;
+    padding: 8px 12px;
+  }
+
+  .session-manager__new-text {
+    display: none;
+  }
+
+  .session-item {
+    min-width: 120px;
+    padding: 10px;
+  }
+
+  .session-item__title {
+    font-size: 0.8125rem;
+  }
+
+  .session-item__time {
+    font-size: 0.6875rem;
+  }
+}
+
+/* =============================================================================
+   다크 모드 지원
+   ============================================================================= */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --app-bg: #1a1a1a;
+    --app-text: #ffffff;
+    --app-text-secondary: #999999;
+    --app-border: #333333;
+    --app-primary: #0066cc;
+    --app-primary-hover: #0052a3;
+    --app-error-bg: #4a1c1c;
+    --app-error-text: #f8d7da;
+    --app-error-border: #6b2c2c;
+    --app-shadow: rgba(0, 0, 0, 0.3);
+  }
+
+  .app__welcome {
+    background-color: #2d2d2d;
+  }
+
+  .app__welcome-button:disabled {
+    background-color: #555555;
+  }
+
+  /* 세션 매니저 다크 모드 */
+  .session-manager {
+    background-color: #242424;
+    border-right-color: var(--app-border);
+  }
+
+  .session-manager__header {
+    background-color: #2d2d2d;
+    border-bottom-color: var(--app-border);
+  }
+
+  .session-manager__title {
+    color: var(--app-text);
+  }
+
+  .session-item:hover {
+    background-color: #333333;
+  }
+
+  .session-item--active {
+    background-color: #1a3a5c;
+  }
+
+  .session-item--active:hover {
+    background-color: #1f4570;
+  }
+
+  .session-item__title {
+    color: var(--app-text);
+  }
+
+  .session-item__time {
+    color: var(--app-text-secondary);
+  }
+}
+
+/* =============================================================================
+   접근성 개선
+   ============================================================================= */
+
+/* 포커스 스타일 */
+.app__welcome-button:focus-visible,
+.app__error-close:focus-visible {
+  outline: 2px solid var(--app-primary);
+  outline-offset: 2px;
+}
+
+/* 고대비 모드 */
+@media (prefers-contrast: high) {
+  .app__error {
+    border: 2px solid var(--app-error-text);
+  }
+
+  .app__welcome-button {
+    border: 2px solid #ffffff;
+  }
+}
+
+/* 애니메이션 감소 모드 */
+@media (prefers-reduced-motion: reduce) {
+  .app__error,
+  .app__welcome-icon {
+    animation: none;
+  }
+
+  .app__welcome-button {
+    transition: none;
+  }
+}

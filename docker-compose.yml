@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # 백엔드 서비스
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ai-chatbot-backend
+    ports:
+      - "8000:8000"
+    environment:
+      # AWS Bedrock 구성
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION}
+      - BEDROCK_MODEL_ID=${BEDROCK_MODEL_ID:-anthropic.claude-sonnet-4-5}
+      - BEDROCK_TEMPERATURE=${BEDROCK_TEMPERATURE:-0.7}
+      - BEDROCK_MAX_TOKENS=${BEDROCK_MAX_TOKENS:-4096}
+      
+      # Grafana MCP 구성
+      - GRAFANA_URL=${GRAFANA_URL}
+      - GRAFANA_API_KEY=${GRAFANA_API_KEY}
+      
+      # CloudWatch MCP 구성
+      - CLOUDWATCH_REGION=${CLOUDWATCH_REGION}
+      - CLOUDWATCH_AWS_ACCESS_KEY_ID=${CLOUDWATCH_AWS_ACCESS_KEY_ID}
+      - CLOUDWATCH_AWS_SECRET_ACCESS_KEY=${CLOUDWATCH_AWS_SECRET_ACCESS_KEY}
+      
+      # 데이터베이스 구성
+      - DATABASE_PATH=/app/data/chatbot.db
+    volumes:
+      # SQLite 데이터베이스 지속성을 위한 볼륨
+      - backend-data:/app/data
+    networks:
+      - chatbot-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # 프론트엔드 서비스
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ai-chatbot-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - chatbot-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+# 네트워크 구성
+networks:
+  chatbot-network:
+    driver: bridge
+
+# 볼륨 구성
+volumes:
+  backend-data:
+    driver: local
